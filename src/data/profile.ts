@@ -4,7 +4,7 @@ export const profile = {
   name: 'Akanksha Shukla',
   initials: 'AS',
   headline: 'Data Analyst & Data Scientist — Python · SQL · Machine Learning',
-  tagline: 'Data Science | ML | BI',
+  tagline: 'Data Analyst | ML | BI',
   role: 'Data Analyst & Data Scientist',
   summary:
     'Mathematics graduate with a strong analytical foundation in Python, SQL and Machine Learning. I build end-to-end data science projects — from data warehouses and ETL pipelines to forecasting, recommendation systems and interactive BI dashboards.',
