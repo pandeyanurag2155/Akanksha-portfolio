@@ -1,0 +1,14 @@
+# dependencies & build output
+node_modules
+dist
+.astro
+
+# original resume (site uses public/Akanksha-Shukla-Resume.pdf)
+Akanksha-Resume.pdf
+
+# env / OS / editor
+.env
+.env.*
+.DS_Store
+.vscode
+.netlify

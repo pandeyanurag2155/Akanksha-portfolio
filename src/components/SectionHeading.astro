@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+interface Props { eyebrow: string; title: string; copy?: string; icon?: string }
+const { eyebrow, title, copy, icon } = Astro.props;
+---
+<div class="section-heading reveal">
+  <div class="eyebrow">{icon && <Icon name={icon} size={16} />}<span>{eyebrow}</span></div>
+  <h2>{title}</h2>
+  {copy && <p>{copy}</p>}
+</div>

@@ -1,0 +1,128 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/profile';
+
+const title = `${profile.name} | ${profile.role}`;
+const description = `${profile.name} — ${profile.role} skilled in Python, SQL, Machine Learning, Power BI and Tableau. End-to-end data science projects: forecasting, recommendation systems and BI dashboards.`;
+const url = profile.siteUrl;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  alumniOf: 'Siddharth University',
+  email: profile.email,
+  url,
+  sameAs: [profile.links.github, profile.links.linkedin],
+  knowsAbout: ['Python', 'SQL', 'Machine Learning', 'Data Analysis', 'XGBoost', 'Power BI', 'Tableau', 'Statistics'],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#f7f3fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <!-- Paint se pehle theme set karo taaki flash na ho -->
+    <script is:inline>
+      (function () {
+        document.documentElement.classList.add('js');
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script>
+      // Reveal-on-scroll (Framer Motion ki jagah, ~0 KB)
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          }),
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('in'));
+      }
+
+      // Theme toggle
+      const root = document.documentElement;
+      const isDark = () =>
+        root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.querySelectorAll('[data-theme-toggle]').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const next = isDark() ? 'light' : 'dark';
+          root.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        }),
+      );
+
+      // Mobile menu
+      const menuBtn = document.querySelector('[data-menu-toggle]');
+      const nav = document.querySelector('.primary-nav');
+      menuBtn?.addEventListener('click', () => {
+        const open = nav?.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', String(!!open));
+      });
+      nav?.querySelectorAll('a').forEach((a) =>
+        a.addEventListener('click', () => {
+          nav.classList.remove('open');
+          menuBtn?.setAttribute('aria-expanded', 'false');
+        }),
+      );
+
+      // Contact form -> Netlify Forms (email notification Netlify dashboard se aati hai)
+      const form = document.querySelector<HTMLFormElement>('#contact-form');
+      const status = document.querySelector<HTMLElement>('#form-status');
+      const setStatus = (msg: string, ok: boolean) => {
+        if (!status) return;
+        status.textContent = msg;
+        status.classList.toggle('error', !ok);
+      };
+      if (new URLSearchParams(location.search).has('sent')) {
+        setStatus("Thanks! Your message has been sent — I'll get back to you soon.", true);
+      }
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector<HTMLButtonElement>('button[type=submit]');
+        if (btn) btn.disabled = true;
+        setStatus('Sending…', true);
+        try {
+          const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+          const res = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body,
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          setStatus("Thanks! Your message has been sent — I'll get back to you soon.", true);
+          form.reset();
+        } catch {
+          setStatus(`Couldn't send right now. Please email me at ${form.dataset.email}.`, false);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

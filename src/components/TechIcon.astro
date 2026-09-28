@@ -1,0 +1,15 @@
+---
+import { techIcons } from '../data/profile';
+interface Props { skill: string }
+const { skill } = Astro.props;
+const t = techIcons[skill] ?? { label: skill.slice(0, 2).toUpperCase(), color: '#0055ff' };
+// Background ki brightness dekh ke text white ya black chuno
+const hex = t.color.replace('#', '');
+const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+const fs = t.label.length > 2 ? 10 : 13;
+---
+<svg class="tech-icon" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+  <rect x="3" y="3" width="34" height="34" rx="7" fill={t.color} stroke="#1a1a1a" stroke-width="3" />
+  <text x="20" y="21" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, monospace" font-weight="800" font-size={fs} fill={lum < 0.5 ? '#fff' : '#1a1a1a'}>{t.label}</text>
+</svg>

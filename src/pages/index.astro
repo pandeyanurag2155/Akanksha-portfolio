@@ -1,0 +1,249 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import TechIcon from '../components/TechIcon.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { profile, metrics, strengths, projects, skills, education } from '../data/profile';
+
+const nav = [
+  { label: 'Projects', href: '#projects' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Education', href: '#education' },
+  { label: 'Contact', href: '#contact' },
+];
+const accents = ['blue', 'mint', 'peach', 'lavender'];
+// Notebook card ke bar chart ke liye (RMSE: baseline vs model, lower is better)
+const bars = [
+  { label: 'Baseline', value: 1.0432 },
+  { label: 'MF + bias', value: 0.8788 },
+];
+---
+<Base>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label={`${profile.name} home`}>
+      <span class="brand-mark">{profile.initials}</span>
+      <span class="brand-copy">
+        <strong>{profile.name}</strong>
+        <span>{profile.tagline}</span>
+      </span>
+    </a>
+    <nav class="primary-nav" aria-label="Primary">
+      {nav.map((n) => <a class="nav-link" href={n.href}>{n.label}</a>)}
+    </nav>
+    <div class="header-actions">
+      <a class="icon-btn" href={profile.links.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={18} /></a>
+      <a class="icon-btn" href={profile.links.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><Icon name="linkedin" size={18} /></a>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle dark mode">
+        <Icon name="moon" size={18} class="i-moon" /><Icon name="sun" size={18} class="i-sun" />
+      </button>
+      <a class="btn btn-primary header-cta" href={profile.links.resume} download>
+        <Icon name="download" size={16} /><span>Resume</span>
+      </a>
+      <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-label="Open menu" aria-expanded="false">
+        <Icon name="menu" size={18} />
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <span class="shape s1"></span><span class="shape s2"></span><span class="shape s3"></span><span class="shape s4"></span>
+      </div>
+      <div class="hero-shell">
+        <div class="hero-copy reveal">
+          <div class="status-pill"><span class="dot"></span><span>Open to data analyst & data science roles</span></div>
+          <h1>{profile.name}</h1>
+          <p class="hero-role">{profile.headline}</p>
+          <p class="hero-summary">{profile.summary}</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects"><Icon name="arrow" size={18} /><span>View Projects</span></a>
+            <a class="btn btn-secondary" href={profile.links.resume} download><Icon name="download" size={18} /><span>Download Resume</span></a>
+          </div>
+          <div class="contact-strip">
+            <a href={profile.links.email}><Icon name="mail" size={16} />{profile.email}</a>
+            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><Icon name="linkedin" size={16} />LinkedIn</a>
+            <a href={profile.links.github} target="_blank" rel="noreferrer"><Icon name="github" size={16} />GitHub</a>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          {profile.photo ? (
+            <img class="portrait" src={profile.photo} alt={`${profile.name} portrait`} width="420" height="520" loading="eager" fetchpriority="high" />
+          ) : (
+            <div class="terminal notebook" role="img" aria-label="Animated notebook training a movie recommendation model">
+              <div class="terminal-bar"><span></span><span></span><span></span><em>recommender.ipynb</em></div>
+              <pre class="terminal-body"><code><span class="l l1"><b class="c-muted">In [1]:</b> <b class="c-blue">model</b> = MatrixFactorization()</span>
+<span class="l l2"><b class="c-muted">In [2]:</b> <b class="c-blue">model</b>.fit(ratings)  <b class="c-muted"># 100,836 ratings</b></span>
+<span class="l l3"><b class="c-muted">In [3]:</b> evaluate(<b class="c-blue">model</b>, test)</span>
+<span class="l l4"><b class="c-green">Out[3]:</b> RMSE <b class="c-yellow">0.8788</b>  MAE <b class="c-yellow">0.6724</b>  <b class="c-green">↓15.75%</b></span></code></pre>
+              <div class="nb-chart l l5">
+                <span class="nb-chart-title">RMSE — lower is better</span>
+                {bars.map((b, i) => (
+                  <div class="nb-row">
+                    <span class="nb-label">{b.label}</span>
+                    <span class="nb-track"><span class={`nb-bar nb-bar-${i}`} style={`--w:${(b.value / 1.1) * 100}%`}></span></span>
+                    <span class="nb-val">{b.value.toFixed(4)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          <div class="floating-chip chip-a">Python · SQL</div>
+          <div class="floating-chip chip-b">XGBoost</div>
+          <div class="floating-chip chip-c">Power BI · Tableau</div>
+        </div>
+      </div>
+
+      <div class="metric-grid">
+        {metrics.map((m) => (
+          <div class="metric-card reveal"><strong>{m.value}</strong><span>{m.label}</span></div>
+        ))}
+      </div>
+    </section>
+
+    <!-- STRENGTHS -->
+    <section class="section">
+      <SectionHeading
+        eyebrow="Core Strengths"
+        icon="sparkle"
+        title="Turning raw data into decisions."
+        copy="The areas I work on most: SQL and data pipelines, machine learning models, BI dashboards, and the statistics behind them."
+      />
+      <div class="focus-grid">
+        {strengths.map((s, i) => (
+          <article class={`card focus-card accent-${accents[i % accents.length]} reveal`}>
+            <div class="focus-top"><Icon name={s.icon} size={24} /><span>0{i + 1}</span></div>
+            <h3>{s.title}</h3>
+            <p>{s.copy}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="section" id="projects">
+      <SectionHeading
+        eyebrow="Projects"
+        icon="folder"
+        title="End-to-end data science projects."
+        copy="From warehouse design and ETL to forecasting, recommendations and interactive dashboards."
+      />
+      {projects.length === 0 ? (
+        <div class="card empty-state reveal">
+          <Icon name="folder" size={28} />
+          <h3>Projects coming soon</h3>
+          <p>Case studies are on the way. Meanwhile, check out my code on GitHub.</p>
+          <a class="btn btn-secondary" href={profile.links.github} target="_blank" rel="noreferrer"><Icon name="github" size={18} /><span>Visit GitHub</span></a>
+        </div>
+      ) : (
+        <div class="project-grid">
+          {projects.map((p, i) => (
+            <article class={`card project-card accent-${accents[i % accents.length]} ${i === 0 ? 'project-featured' : ''} reveal`}>
+              {p.image && (
+                <div class="project-shot">
+                  <img src={p.image} alt={`${p.title} screenshot`} loading="lazy" width="640" height="400" />
+                </div>
+              )}
+              <div class="project-top">
+                <span class="project-index">0{i + 1}</span>
+                <h3>{p.title}</h3>
+              </div>
+              <p class="project-subtitle">{p.subtitle}</p>
+              <div class="tag-row">{p.tags.map((t) => <span>{t}</span>)}</div>
+              <ul>{p.points.map((pt) => <li>{pt}</li>)}</ul>
+              {(p.live || p.repo) && (
+                <div class="project-links">
+                  {p.live && <a href={p.live} target="_blank" rel="noreferrer"><span>Live</span><Icon name="arrow" size={16} /></a>}
+                  {p.repo && <a href={p.repo} target="_blank" rel="noreferrer"><span>Code</span><Icon name="github" size={16} /></a>}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <!-- SKILLS -->
+    <section class="section" id="skills">
+      <SectionHeading
+        eyebrow="Stack"
+        icon="layers"
+        title="Tools and techniques I work with."
+        copy="Languages, libraries, BI tools and the statistical concepts behind my projects."
+      />
+      <div class="skills-grid">
+        {skills.map((s) => (
+          <article class="card skill-card reveal">
+            <div class="skill-title"><Icon name={s.icon} size={20} /><h3>{s.title}</h3></div>
+            <div class="skill-list">
+              {s.items.map((it) => <span class="skill-pill"><TechIcon skill={it} /><span>{it}</span></span>)}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="section" id="education">
+      <SectionHeading eyebrow="Education" icon="cap" title="Education." />
+      <div class="education-grid">
+        {education.map((ed, i) => (
+          <article class={`card education-card accent-${accents[(i + 1) % accents.length]} reveal`}>
+            <Icon name="cap" size={24} />
+            <h3>{ed.degree}</h3>
+            <p>{ed.school}</p>
+            <div class="education-meta"><span>{ed.date}</span>{ed.score && <span>{ed.score}</span>}</div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="card contact-panel reveal">
+        <div>
+          <div class="eyebrow"><Icon name="mail" size={16} /><span>Contact</span></div>
+          <h2>Let's talk data.</h2>
+          <p>Hiring for a data analyst or data science role, or have a dataset that needs answers? Send a message and I'll reply by email.</p>
+          <div class="contact-mini-list">
+            <span>Data Analysis & SQL</span><span>Machine Learning</span><span>BI Dashboards</span>
+          </div>
+        </div>
+        <!-- Netlify Forms: deploy pe Netlify is form ko detect karta hai, submissions dashboard + email pe aate hain -->
+        <form id="contact-form" class="contact-form" name="contact" method="POST" action="/?sent=1" data-netlify="true" netlify-honeypot="bot-field" data-email={profile.email}>
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hp" aria-hidden="true"><label>Leave empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+          <div class="form-row">
+            <label><span>Name</span><input name="name" type="text" placeholder="Your name" autocomplete="name" required /></label>
+            <label><span>Email</span><input name="email" type="email" placeholder="you@example.com" autocomplete="email" required /></label>
+          </div>
+          <label>
+            <span>Reason</span>
+            <select name="reason" required>
+              <option value="" disabled selected>Select one</option>
+              <option>Full-time role</option>
+              <option>Internship</option>
+              <option>Freelance / data project</option>
+              <option>Just saying hi</option>
+            </select>
+          </label>
+          <label><span>Message</span><textarea name="message" rows="5" placeholder="A few details..." required></textarea></label>
+          <div class="form-footer">
+            <a href={profile.links.linkedin} target="_blank" rel="noreferrer"><Icon name="linkedin" size={16} /><span>LinkedIn instead</span></a>
+            <button class="btn btn-primary" type="submit"><Icon name="mail" size={18} /><span>Send Message</span></button>
+          </div>
+          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© {new Date().getFullYear()} {profile.name}</span>
+    <span>Data Analyst & Data Scientist · Python · SQL · ML</span>
+  </footer>
+</Base>
