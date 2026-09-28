@@ -440,3 +440,12 @@ h1, h2, h3, h4 { line-height: 1.15; letter-spacing: -0.02em; }
 .btn-primary { color: #1a1a1a; }
 @media (max-width: 600px) { .chip-b { left: 16px; } }
 @media (min-width: 1001px) { .skill-card:last-child:nth-child(3n + 2) { grid-column: span 2; } }
+
+/* Grid children ko content se chhota hone do (lambi code lines hero ko screen se bahar na dhakelein) */
+.hero-shell > *, .timeline-card, .project-card, .skill-card, .contact-panel > * { min-width: 0; }
+.contact-strip a, .contact-strip span { overflow-wrap: anywhere; }
+@media (max-width: 900px) { .hero-shell { grid-template-columns: minmax(0, 1fr); } }
+.metric-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metric-card strong { font-size: clamp(1.45rem, 6vw, 1.9rem); }
+@media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 360px) { .contact-strip { font-size: 0.8rem; } .metric-card { padding: 14px; } }
